@@ -9,7 +9,10 @@ Webshell php
 - Eval
 - RCE
 - Upload
+- Socket server
 # Usage
 Put parameter get in url login=bro
+
 Ex. Site.com/diplkill.php?login=bro
+
 And enter password (default: aozorafamily)
