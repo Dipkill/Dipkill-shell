@@ -1,7 +1,7 @@
 # Dipkill-shell
 Webshell php
 # Features
-- Automated redirecting into index if url without parameter login=bro
+- Automated redirecting into index if url without parameter log=in
 - Jumping
 - Symlink (only for linux server)
 - Mass Deface
@@ -11,8 +11,8 @@ Webshell php
 - Upload
 - Socket server
 # Usage
-Put parameter get in url login=bro
+Put parameter get in url log=in
 
-Ex. Site.com/diplkill.php?login=bro
+Ex. Site.com/diplkill.php?lo=gin
 
 And enter password (default: aozorafamily)
